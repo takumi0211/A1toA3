@@ -154,6 +154,11 @@
                 const fileName = files[0].name;
                 fileNameDiv.textContent = `選択されたファイル: ${fileName}`;
                 errorMsg.textContent = '';
+
+                // ファイルをfileInputに反映させる
+                const dt = new DataTransfer();
+                dt.items.add(files[0]);
+                fileInput.files = dt.files;
             }
         }
 
@@ -186,10 +191,6 @@
             const newPdf = await PDFDocument.create();
 
             // A1サイズを72dpi換算
-            // A1: 841mm x 594mm
-            // 1 inch = 25.4mm, 72pt/inch
-            // width in pt = (841 / 25.4)*72
-            // height in pt = (594 / 25.4)*72
             const a1_width = (841 / 25.4) * 72;
             const a1_height = (594 / 25.4) * 72;
 
@@ -201,8 +202,6 @@
             // オーバーラップ
             const overlap = 47;
 
-            // 元PDFの1ページ目をコピー
-            // 6つに分割するので、6ページ生成
             for (let i = 0; i < num_splits_y; i++) {
                 for (let j = 0; j < num_splits_x; j++) {
                     const [newPage] = await newPdf.copyPages(origPdf, [0]); 
@@ -216,13 +215,10 @@
                     const width = x_end - x_start;
                     const height = y_end - y_start;
 
-                    // mediabox設定 (x, y, width, height)
-                    // 下左起点(x_start, y_start)、width/heightで指定
                     newPage.setMediaBox(x_start, y_start, width, height);
                 }
             }
 
-            // 全6ページ入りPDFを生成
             const pdfBytes = await newPdf.save();
             return pdfBytes;
         }
@@ -241,3 +237,4 @@
     </script>
 </body>
 </html>
+
