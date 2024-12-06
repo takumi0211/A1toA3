@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFファイル分割(A1→A3×6)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            margin: 50px;
+        }
+
+        h1 {
+            color: #555;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .file-drop-area {
+            border: 2px dashed #888;
+            border-radius: 5px;
+            padding: 20px;
+            width: 70%;
+            height: 200px;
+            margin: 0 auto;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease-in-out;
+            background-color: #fff;
+        }
+
+        .file-drop-area.highlight {
+            border-color: #666;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label[for="file-upload"] {
+            text-decoration: underline;
+            color: #578fbc;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease-in-out;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        p.error {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .loading {
+            margin-top: 20px;
+            color: #333;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
+    <form id="upload-form">
+        <div class="file-drop-area" id="file-drop-area">
+            ファイルをこちらにドラッグ&ドロップまたは
+            <label for="file-upload">ファイルを選択</label>
+            <input id="file-upload" type="file" name="file" accept=".pdf" required>
+        </div>
+        <div class="file-name" id="file-name"></div>
+        <button type="submit">分割してダウンロード</button>
+    </form>
+    <p class="error" id="error-msg"></p>
+    <p class="loading" id="loading-msg" style="display:none;">処理中です。しばらくお待ちください...</p>
+
+    <!-- pdf-lib CDN -->
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script>
+        const { PDFDocument } = PDFLib;
+
+        const fileDropArea = document.getElementById('file-drop-area');
+        const fileInput = document.getElementById('file-upload');
+        const fileNameDiv = document.getElementById('file-name');
+        const form = document.getElementById('upload-form');
+        const errorMsg = document.getElementById('error-msg');
+        const loadingMsg = document.getElementById('loading-msg');
+
+        ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ;['dragenter', 'dragover'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ;['dragleave', 'drop'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        fileDropArea.addEventListener('drop', handleDrop, false);
+
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            fileDropArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            fileDropArea.classList.remove('highlight');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const fileName = files[0].name;
+                fileNameDiv.textContent = `選択されたファイル: ${fileName}`;
+                errorMsg.textContent = '';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.textContent = '';
+
+            const files = fileInput.files;
+            if (!files || files.length === 0) {
+                errorMsg.textContent = 'ファイルが選択されていません';
+                return;
+            }
+
+            loadingMsg.style.display = 'block';
+            try {
+                const file = files[0];
+                const arrayBuffer = await file.arrayBuffer();
+                const resultPdfBytes = await splitAndMergePdf(arrayBuffer);
+                downloadFile(resultPdfBytes, 'split_and_merge_file.pdf');
+            } catch (err) {
+                console.error(err);
+                errorMsg.textContent = 'エラーが発生しました: ' + err.message;
+            } finally {
+                loadingMsg.style.display = 'none';
+            }
+        });
+
+        async function splitAndMergePdf(inputArrayBuffer) {
+            const origPdf = await PDFDocument.load(inputArrayBuffer);
+            const newPdf = await PDFDocument.create();
+
+            // A1サイズを72dpi換算
+            // A1: 841mm x 594mm
+            // 1 inch = 25.4mm, 72pt/inch
+            // width in pt = (841 / 25.4)*72
+            // height in pt = (594 / 25.4)*72
+            const a1_width = (841 / 25.4) * 72;
+            const a1_height = (594 / 25.4) * 72;
+
+            const num_splits_x = 3;
+            const num_splits_y = 2;
+            const a1_width_split = a1_width / num_splits_x;
+            const a1_height_split = a1_height / num_splits_y;
+
+            // オーバーラップ
+            const overlap = 47;
+
+            // 元PDFの1ページ目をコピー
+            // 6つに分割するので、6ページ生成
+            for (let i = 0; i < num_splits_y; i++) {
+                for (let j = 0; j < num_splits_x; j++) {
+                    const [newPage] = await newPdf.copyPages(origPdf, [0]); 
+                    newPdf.addPage(newPage);
+
+                    const x_start = j * a1_width_split;
+                    const x_end = (j + 1) * a1_width_split + overlap;
+                    const y_start = i * a1_height_split;
+                    const y_end = (i + 1) * a1_height_split + overlap;
+
+                    const width = x_end - x_start;
+                    const height = y_end - y_start;
+
+                    // mediabox設定 (x, y, width, height)
+                    // 下左起点(x_start, y_start)、width/heightで指定
+                    newPage.setMediaBox(x_start, y_start, width, height);
+                }
+            }
+
+            // 全6ページ入りPDFを生成
+            const pdfBytes = await newPdf.save();
+            return pdfBytes;
+        }
+
+        function downloadFile(bytes, filename) {
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
