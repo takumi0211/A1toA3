@@ -113,6 +113,8 @@
         const errorMsg = document.getElementById('error-msg');
         const loadingMsg = document.getElementById('loading-msg');
 
+        let originalFileName = '';
+
         ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             fileDropArea.addEventListener(eventName, preventDefaults, false);
             document.body.addEventListener(eventName, preventDefaults, false);
@@ -151,11 +153,10 @@
 
         function handleFiles(files) {
             if (files.length > 0) {
-                const fileName = files[0].name;
-                fileNameDiv.textContent = `選択されたファイル: ${fileName}`;
+                originalFileName = files[0].name;
+                fileNameDiv.textContent = `選択されたファイル: ${originalFileName}`;
                 errorMsg.textContent = '';
 
-                // ファイルをfileInputに反映させる
                 const dt = new DataTransfer();
                 dt.items.add(files[0]);
                 fileInput.files = dt.files;
@@ -177,7 +178,12 @@
                 const file = files[0];
                 const arrayBuffer = await file.arrayBuffer();
                 const resultPdfBytes = await splitAndMergePdf(arrayBuffer);
-                downloadFile(resultPdfBytes, 'split_and_merge_file.pdf');
+
+                // 元ファイル名から拡張子を分離
+                const baseName = originalFileName.replace(/\.[^/.]+$/, "");
+                const downloadName = `split_${baseName}.pdf`;
+                
+                downloadFile(resultPdfBytes, downloadName);
             } catch (err) {
                 console.error(err);
                 errorMsg.textContent = 'エラーが発生しました: ' + err.message;
@@ -237,4 +243,3 @@
     </script>
 </body>
 </html>
-
