@@ -461,70 +461,19 @@
             if (isMobile) {
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                     // iOS用の処理
-                    const overlay = document.createElement('div');
-                    overlay.style.position = 'fixed';
-                    overlay.style.top = '0';
-                    overlay.style.left = '0';
-                    overlay.style.width = '100%';
-                    overlay.style.height = '100%';
-                    overlay.style.backgroundColor = '#f8fafc';
-                    overlay.style.zIndex = '9998';
-
-                    const header = document.createElement('div');
-                    header.style.position = 'fixed';
-                    header.style.top = '0';
-                    header.style.left = '0';
-                    header.style.width = '100%';
-                    header.style.padding = '15px';
-                    header.style.backgroundColor = 'white';
-                    header.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                    header.style.zIndex = '10000';
-                    header.style.display = 'flex';
-                    header.style.justifyContent = 'center';
-                    header.style.alignItems = 'center';
-
-                    const title = document.createElement('div');
-                    title.textContent = 'PDFプレビュー';
-                    title.style.fontSize = '16px';
-                    title.style.fontWeight = '600';
-                    title.style.color = '#1e293b';
-
-                    const closeButton = document.createElement('button');
-                    closeButton.textContent = '閉じる';
-                    closeButton.style.position = 'absolute';
-                    closeButton.style.right = '15px';
-                    closeButton.style.padding = '8px 16px';
-                    closeButton.style.backgroundColor = '#2563eb';
-                    closeButton.style.color = 'white';
-                    closeButton.style.border = 'none';
-                    closeButton.style.borderRadius = '8px';
-                    closeButton.style.fontSize = '14px';
-                    closeButton.style.fontWeight = '500';
-
                     const pdfViewer = document.createElement('iframe');
                     pdfViewer.style.position = 'fixed';
-                    pdfViewer.style.top = '60px'; // ヘッダーの高さ分下げる
+                    pdfViewer.style.top = '0';
                     pdfViewer.style.left = '0';
                     pdfViewer.style.width = '100%';
-                    pdfViewer.style.height = 'calc(100% - 60px)'; // ヘッダーの高さ分引く
+                    pdfViewer.style.height = '100%';
                     pdfViewer.style.border = 'none';
+                    pdfViewer.style.backgroundColor = 'white';
                     pdfViewer.style.zIndex = '9999';
                     pdfViewer.src = url;
-
-                    closeButton.onclick = function() {
-                        document.body.removeChild(overlay);
-                        document.body.removeChild(header);
-                        document.body.removeChild(pdfViewer);
-                    };
-
-                    header.appendChild(title);
-                    header.appendChild(closeButton);
-                    document.body.appendChild(overlay);
-                    document.body.appendChild(header);
                     document.body.appendChild(pdfViewer);
-
                 } else {
-                    // Android用の処理（既存のまま）
+                    // Android用の処理
                     const link = document.createElement('a');
                     link.href = url;
                     link.download = filename;
@@ -533,7 +482,7 @@
                     document.body.removeChild(link);
                 }
             } else {
-                // デスクトップ用の処理（既存のまま）
+                // デスクトップ用の処理
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
