@@ -19,7 +19,7 @@
             color: var(--secondary-color);
             text-align: center;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -29,15 +29,17 @@
         .container {
             max-width: 1200px;
             width: 100%;
-            padding: 0 15px;
+            padding: 0 10px;
             margin: 0 auto;
+            box-sizing: border-box;
         }
 
         h1 {
             color: var(--secondary-color);
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            margin-bottom: 30px;
-            padding: 0 10px;
+            font-size: clamp(1.2rem, 5vw, 2.5rem);
+            margin: 15px 0;
+            padding: 0 5px;
+            line-height: 1.3;
         }
 
         form {
@@ -189,7 +191,7 @@
             display: none;
         }
 
-        /* 広告用のスタイルを追加 */
+        /* 広告用のスイルを追加 */
         .ad-container {
             width: 100%;
             max-width: 800px;
@@ -215,6 +217,100 @@
             .ad-container {
                 max-width: 100%;
                 padding: 10px;
+            }
+        }
+
+        /* タッチデバイス用の調整 */
+        @media (hover: none) {
+            .file-drop-area {
+                border: 2px solid #ccc;
+            }
+
+            button {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            label[for="file-upload"] {
+                padding: 8px 15px;
+                background-color: var(--primary-color);
+                color: white;
+                border-radius: 20px;
+                border: none;
+                margin: 10px 0;
+            }
+        }
+
+        /* スマートフォン向けの調整 */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 0 5px;
+            }
+
+            .file-drop-area {
+                padding: 15px 8px;
+                min-height: 100px;
+            }
+
+            button {
+                padding: 10px 15px;
+                width: 85%;
+            }
+
+            .loading::after {
+                width: 15px;
+                height: 15px;
+            }
+
+            p.error {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* タブレット向けの調整 */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .file-drop-area {
+                width: 90%;
+                padding: 25px 15px;
+            }
+
+            button {
+                width: 80%;
+            }
+        }
+
+        .message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 1000;
+            max-width: 90%;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        /* モバイルデバイス用の調整 */
+        @media (max-width: 480px) {
+            .message {
+                bottom: 40px;
+                font-size: 13px;
+                padding: 10px 16px;
             }
         }
     </style>
@@ -332,7 +428,7 @@
 
             const files = fileInput.files;
             if (!files || files.length === 0) {
-                showError('ファイルが選択されていま���ん');
+                showError('ファイルが選択されていまん');
                 return;
             }
 
@@ -395,13 +491,55 @@
         function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+
+            // モバイルデバイスかどうかを確認
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // モバイルデバイスの場合
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const link = document.createElement('a');
+                    link.href = e.target.result;
+                    link.download = filename;
+                    link.target = '_blank'; // 新しいタブで開く
+                    
+                    // iOSの場合
+                    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        link.target = '_blank';
+                        link.rel = 'noopener';
+                        showMessage('PDFを新しいタブで開きます。長押しして保存してください。');
+                    }
+                    
+                    document.body.appendChild(link);
+                    setTimeout(() => {
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                };
+                reader.readAsDataURL(blob);
+            } else {
+                // デスクトップの場合は既存の処理
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function showMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
         }
 
         function showError(message) {
