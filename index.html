@@ -455,50 +455,96 @@
 
         function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
             if (isMobile) {
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS用の処理を修正
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // データURLを作成
-                        const dataUrl = e.target.result;
-                        
-                        // aタグを作成してダウンロード属性を設定
-                        const link = document.createElement('a');
-                        link.href = dataUrl;
-                        link.download = filename;  // ファイル名を指定
-                        link.type = 'application/pdf';
-                        
-                        // iOSのSafariで開く
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                    // iOS用の処理
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.top = '0';
+                    overlay.style.left = '0';
+                    overlay.style.width = '100%';
+                    overlay.style.height = '100%';
+                    overlay.style.backgroundColor = '#f8fafc';
+                    overlay.style.zIndex = '9998';
+
+                    const header = document.createElement('div');
+                    header.style.position = 'fixed';
+                    header.style.top = '0';
+                    header.style.left = '0';
+                    header.style.width = '100%';
+                    header.style.padding = '15px';
+                    header.style.backgroundColor = 'white';
+                    header.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                    header.style.zIndex = '10000';
+                    header.style.display = 'flex';
+                    header.style.justifyContent = 'center';
+                    header.style.alignItems = 'center';
+
+                    const title = document.createElement('div');
+                    title.textContent = 'PDFプレビュー';
+                    title.style.fontSize = '16px';
+                    title.style.fontWeight = '600';
+                    title.style.color = '#1e293b';
+
+                    const closeButton = document.createElement('button');
+                    closeButton.textContent = '閉じる';
+                    closeButton.style.position = 'absolute';
+                    closeButton.style.right = '15px';
+                    closeButton.style.padding = '8px 16px';
+                    closeButton.style.backgroundColor = '#2563eb';
+                    closeButton.style.color = 'white';
+                    closeButton.style.border = 'none';
+                    closeButton.style.borderRadius = '8px';
+                    closeButton.style.fontSize = '14px';
+                    closeButton.style.fontWeight = '500';
+
+                    const pdfViewer = document.createElement('iframe');
+                    pdfViewer.style.position = 'fixed';
+                    pdfViewer.style.top = '60px'; // ヘッダーの高さ分下げる
+                    pdfViewer.style.left = '0';
+                    pdfViewer.style.width = '100%';
+                    pdfViewer.style.height = 'calc(100% - 60px)'; // ヘッダーの高さ分引く
+                    pdfViewer.style.border = 'none';
+                    pdfViewer.style.zIndex = '9999';
+                    pdfViewer.src = url;
+
+                    closeButton.onclick = function() {
+                        document.body.removeChild(overlay);
+                        document.body.removeChild(header);
+                        document.body.removeChild(pdfViewer);
                     };
-                    reader.readAsDataURL(blob);
+
+                    header.appendChild(title);
+                    header.appendChild(closeButton);
+                    document.body.appendChild(overlay);
+                    document.body.appendChild(header);
+                    document.body.appendChild(pdfViewer);
+
                 } else {
-                    // Android用の処理
-                    const url = URL.createObjectURL(blob);
+                    // Android用の処理（既存のまま）
                     const link = document.createElement('a');
                     link.href = url;
                     link.download = filename;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
                 }
             } else {
-                // デスクトップ用の処理
-                const url = URL.createObjectURL(blob);
+                // デスクトップ用の処理（既存のまま）
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
             }
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 1000);
         }
     </script>
 </body>
