@@ -400,18 +400,22 @@
                 const baseName = originalFileName.replace(/\.[^/.]+$/, "");
                 const downloadName = `split_${baseName}.pdf`;
                 
-                await downloadFile(resultPdfBytes, downloadName);
-                
-                // 成功メッセージを表示
-                const successMsg = document.createElement('p');
-                successMsg.textContent = 'PDFの分割が完了しました';
-                successMsg.style.color = '#10B981';
-                successMsg.style.margin = '1rem 0';
-                form.appendChild(successMsg);
-                
-                setTimeout(() => {
-                    successMsg.remove();
-                }, 3000);
+                // PDFを表示または保存
+                const blob = new Blob([resultPdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // iOS: 標準プレビューで開く
+                    window.location.href = url;
+                } else {
+                    // その他: ダウンロード
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = downloadName;
+                    link.click();
+                }
+
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
 
             } catch (err) {
                 console.error(err);
