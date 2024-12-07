@@ -167,18 +167,33 @@
         // ダウンロードボタンの設定
         const downloadBtn = document.getElementById('downloadBtn');
         if (pdfData) {
-            const byteCharacters = atob(decodeURIComponent(pdfData));
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            try {
+                const byteCharacters = atob(decodeURIComponent(pdfData));
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                downloadBtn.href = url;
+                downloadBtn.target = '_blank';
+                downloadBtn.rel = 'noopener';
+            } catch (error) {
+                console.error('PDFデータの処理中にエラーが発生しました:', error);
+                document.querySelector('.container').innerHTML = `
+                    <h1>エラーが発生しました</h1>
+                    <p>PDFの処理中にエラーが発生しました。もう一度お試しください。</p>
+                    <a href="index.html" class="back-link">トップページに戻る</a>
+                `;
             }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            
-            downloadBtn.href = url;
-            downloadBtn.target = '_blank';
-            downloadBtn.rel = 'noopener';
+        } else {
+            document.querySelector('.container').innerHTML = `
+                <h1>エラー</h1>
+                <p>PDFデータが見つかりません。もう一度お試しください。</p>
+                <a href="index.html" class="back-link">トップページに戻る</a>
+            `;
         }
     </script>
 </body>
