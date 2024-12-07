@@ -431,17 +431,18 @@
             const a1_width = (841 / 25.4) * 72;
             const a1_height = (594 / 25.4) * 72;
 
+            // 3x2で分割
             const num_splits_x = 3;
             const num_splits_y = 2;
             const a1_width_split = a1_width / num_splits_x;
             const a1_height_split = a1_height / num_splits_y;
 
-            // オーラップ
+            // オーバーラップ
             const overlap = 47;
 
             for (let i = 0; i < num_splits_y; i++) {
                 for (let j = 0; j < num_splits_x; j++) {
-                    const [newPage] = await newPdf.copyPages(origPdf, [0]); 
+                    const [newPage] = await newPdf.copyPages(origPdf, [0]);
                     newPdf.addPage(newPage);
 
                     const x_start = j * a1_width_split;
@@ -449,48 +450,29 @@
                     const y_start = i * a1_height_split;
                     const y_end = (i + 1) * a1_height_split + overlap;
 
-                    const width = x_end - x_start;
-                    const height = y_end - y_start;
-
-                    newPage.setMediaBox(x_start, y_start, width, height);
+                    newPage.setMediaBox(x_start, y_start, x_end - x_start, y_end - y_start);
                 }
             }
 
-            const pdfBytes = await newPdf.save();
-            return pdfBytes;
+            return await newPdf.save();
         }
 
         function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-            if (isMobile) {
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS用の処理 - 標準プレビューを開く
-                    window.open(url, '_blank');
-                } else {
-                    // Android用の処理
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
+            // iOSの場合は新しいタブでPDFを開く（標準プレビューが起動する）
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.location.href = url;
             } else {
-                // デスクトップ用の処理
+                // その他のデバイスは直接ダウンロード
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
-                document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
             }
 
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-            }, 1000);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
     </script>
 </body>
