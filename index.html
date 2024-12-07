@@ -5,104 +5,267 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDFファイル分割(A1→A3×6)</title>
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2c3e50;
+            --background-color: #f5f6fa;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
             text-align: center;
-            margin: 50px;
-        }
-
-        h1 {
-            color: #555;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        form {
-            margin-top: 20px;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .file-drop-area {
-            border: 2px dashed #888;
-            border-radius: 5px;
-            padding: 20px;
-            width: 70%;
-            height: 200px;
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 15px;
             margin: 0 auto;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.3s ease-in-out;
-            background-color: #fff;
         }
 
+        h1 {
+            color: var(--secondary-color);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .file-drop-area {
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            padding: 30px 20px;
+            width: 90%;
+            max-width: 600px;
+            min-height: 150px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .file-drop-area:hover,
         .file-drop-area.highlight {
-            border-color: #666;
+            border-color: var(--primary-color);
+            background-color: rgba(74, 144, 226, 0.05);
         }
 
         .file-name {
-            margin-top: 10px;
-            color: #555;
-            font-weight: bold;
+            margin-top: 15px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            word-break: break-all;
+            max-width: 100%;
+            padding: 0 10px;
         }
 
+        label[for="file-upload"] {
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            text-decoration: none;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 2px;
+            display: inline-block;
+        }
+
+        label[for="file-upload"]:hover {
+            color: #2171c7;
+        }
+
+        button {
+            padding: 15px 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+            width: fit-content;
+            min-width: 200px;
+        }
+
+        button:hover {
+            background-color: #2171c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        p.error {
+            color: var(--error-color);
+            margin: 15px 0;
+            padding: 10px 20px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .loading {
+            margin: 20px 0;
+            color: var(--secondary-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .file-drop-area {
+                padding: 20px 15px;
+                min-height: 120px;
+            }
+
+            button {
+                padding: 12px 30px;
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .file-drop-area {
+                width: 95%;
+                padding: 15px 10px;
+            }
+        }
+
+        /* ファイル入力のデフォルト表示を非表示にする */
         input[type="file"] {
             display: none;
         }
 
-        label[for="file-upload"] {
-            text-decoration: underline;
-            color: #578fbc;
-            cursor: pointer;
+        /* 広告用のスタイルを追加 */
+        .ad-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        button {
-            padding: 15px 30px;
-            background-color: #555;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease-in-out;
-            margin-top: 10px;
+        .ad-container.top {
+            margin-bottom: 30px;
         }
 
-        button:hover {
-            background-color: #333;
+        .ad-container.bottom {
+            margin-top: 30px;
         }
 
-        p.error {
-            color: #e74c3c;
-            margin-top: 10px;
-        }
-
-        .loading {
-            margin-top: 20px;
-            color: #333;
-            font-style: italic;
+        @media (max-width: 768px) {
+            .ad-container {
+                max-width: 100%;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
-    <form id="upload-form">
-        <div class="file-drop-area" id="file-drop-area">
-            ファイルをこちらにドラッグ&ドロップまたは
-            <label for="file-upload">ファイルを選択</label>
-            <input id="file-upload" type="file" name="file" accept=".pdf" required>
+    <div class="container">
+        <!-- 上部広告枠 -->
+        <div class="ad-container top" id="ad-top">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR-CLIENT-ID"
+                 data-ad-slot="YOUR-AD-SLOT"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
-        <div class="file-name" id="file-name"></div>
-        <button type="submit">分割してダウンロード</button>
-    </form>
-    <p class="error" id="error-msg"></p>
-    <p class="loading" id="loading-msg" style="display:none;">処理中です。しばらくお待ちください...</p>
 
+        <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
+        
+        <form id="upload-form">
+            <div class="file-drop-area" id="file-drop-area">
+                <p>ファイルをこちらにドラッグ&ドロップ</p>
+                <p>または</p>
+                <label for="file-upload">ファイルを選択</label>
+                <input id="file-upload" type="file" name="file" accept=".pdf" required>
+            </div>
+            <div class="file-name" id="file-name"></div>
+            <button type="submit">分割してダウンロード</button>
+        </form>
+        <p class="error" id="error-msg" style="display: none;"></p>
+        <p class="loading" id="loading-msg" style="display: none;">処理中です。しばらくお待ちください</p>
+
+        <!-- 下部広告枠 -->
+        <div class="ad-container bottom" id="ad-bottom">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR-CLIENT-ID"
+                 data-ad-slot="YOUR-AD-SLOT"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
     <!-- pdf-lib CDN -->
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-CLIENT-ID"
+     crossorigin="anonymous"></script>
     <script>
         const { PDFDocument } = PDFLib;
 
@@ -155,7 +318,7 @@
             if (files.length > 0) {
                 originalFileName = files[0].name;
                 fileNameDiv.textContent = `選択されたファイル: ${originalFileName}`;
-                errorMsg.textContent = '';
+                showError('');
 
                 const dt = new DataTransfer();
                 dt.items.add(files[0]);
@@ -165,11 +328,11 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorMsg.textContent = '';
+            showError('');
 
             const files = fileInput.files;
             if (!files || files.length === 0) {
-                errorMsg.textContent = 'ファイルが選択されていません';
+                showError('ファイルが選択されていま���ん');
                 return;
             }
 
@@ -186,7 +349,7 @@
                 downloadFile(resultPdfBytes, downloadName);
             } catch (err) {
                 console.error(err);
-                errorMsg.textContent = 'エラーが発生しました: ' + err.message;
+                showError('エラーが発生しました: ' + err.message);
             } finally {
                 loadingMsg.style.display = 'none';
             }
@@ -239,6 +402,11 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = message ? 'block' : 'none';
         }
     </script>
 </body>
