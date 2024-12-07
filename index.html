@@ -2,108 +2,310 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PDFファイル分割(A1→A3×6)</title>
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --accent-color: #3b82f6;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            margin: 50px;
         }
 
-        h1 {
-            color: #555;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        form {
-            margin-top: 20px;
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            margin: 20px auto;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .file-drop-area {
-            border: 2px dashed #888;
-            border-radius: 5px;
-            padding: 20px;
-            width: 70%;
-            height: 200px;
-            margin: 0 auto;
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 2rem;
             text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .file-drop-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: border-color 0.3s ease-in-out;
-            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .file-drop-area.highlight {
-            border-color: #666;
+        .file-drop-area:hover, .file-drop-area.highlight {
+            border-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-2px);
         }
 
-        .file-name {
-            margin-top: 10px;
-            color: #555;
-            font-weight: bold;
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            animation: float 3s ease-in-out infinite;
         }
 
-        input[type="file"] {
-            display: none;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .file-drop-area p {
+            margin: 0.5rem 0;
+            color: var(--text-color);
+            font-size: 1rem;
         }
 
         label[for="file-upload"] {
-            text-decoration: underline;
-            color: #578fbc;
-            cursor: pointer;
-        }
-
-        button {
-            padding: 15px 30px;
-            background-color: #555;
-            color: #fff;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
             border: none;
-            border-radius: 5px;
+        }
+
+        label[for="file-upload"]:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .file-name {
+            margin: 1.5rem auto;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            max-width: 90%;
+            word-break: break-all;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button[type="submit"] {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease-in-out;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            width: 90%;
+            max-width: 300px;
+            margin: 1rem auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        button:hover {
-            background-color: #333;
-        }
-
-        p.error {
-            color: #e74c3c;
-            margin-top: 10px;
+        button[type="submit"]:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .loading {
-            margin-top: 20px;
-            color: #333;
-            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: var(--text-color);
+            font-weight: 500;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .loading::before {
+            content: '';
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin: 1rem auto;
+            max-width: 90%;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 1rem;
+                margin: 5px;
+                width: calc(100% - 10px);
+            }
+
+            h1 {
+                font-size: 1.3rem;
+                margin: 0.8rem 0;
+                padding: 0 10px;
+            }
+
+            .file-drop-area {
+                padding: 1.2rem 0.8rem;
+                width: 95%;
+                margin: 0.5rem auto;
+            }
+
+            .upload-icon {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .file-drop-area p {
+                font-size: 0.9rem;
+                margin: 0.3rem 0;
+            }
+
+            label[for="file-upload"] {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+                margin-top: 0.5rem;
+            }
+
+            .file-name {
+                font-size: 0.8rem;
+                padding: 0.8rem;
+                margin: 1rem auto;
+                width: 95%;
+            }
+
+            button[type="submit"] {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.95rem;
+                width: 95%;
+            }
+
+            .error, .loading {
+                font-size: 0.85rem;
+                padding: 0.8rem;
+                width: 95%;
+            }
+        }
+
+        /* さらに小さい画面用 */
+        @media (max-width: 320px) {
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .file-drop-area {
+                padding: 1rem 0.5rem;
+            }
+
+            .upload-icon {
+                font-size: 1.8rem;
+            }
+
+            label[for="file-upload"] {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            button[type="submit"] {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* タッチデバイス用の調整 */
+        @media (hover: none) {
+            .file-drop-area:hover {
+                transform: none;
+            }
+
+            button[type="submit"]:hover {
+                transform: none;
+            }
+
+            label[for="file-upload"]:hover {
+                transform: none;
+            }
         }
     </style>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2935851985522990"
      crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
-    
-    <form id="upload-form">
-        <div class="file-drop-area" id="file-drop-area">
-            ファイルをこちらにドラッグ&ドロップまたは
-            <label for="file-upload">ファイルを選択</label>
-            <input id="file-upload" type="file" name="file" accept=".pdf" required>
-        </div>
-        <div class="file-name" id="file-name"></div>
-        <button type="submit">分割してダウンロード</button>
-    </form>
-    <p class="error" id="error-msg"></p>
-    <p class="loading" id="loading-msg" style="display:none;">処理中です。しばらくお待ちください...</p>
+    <div class="container">
+        <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
+        
+        <form id="upload-form">
+            <div class="file-drop-area" id="file-drop-area">
+                <div class="upload-icon">📄</div>
+                <p>PDFファイルをドラッグ＆ドロップ</p>
+                <p>または</p>
+                <label for="file-upload">ファイルを選択</label>
+                <input id="file-upload" type="file" name="file" accept=".pdf" required style="display: none;">
+            </div>
+            <div class="file-name" id="file-name"></div>
+            <button type="submit" id="submit-btn">分割してダウンロード</button>
+        </form>
+        <p class="error" id="error-msg" style="display: none;"></p>
+        <p class="loading" id="loading-msg" style="display: none;">処理中です。しばらくお待ちください</p>
+    </div>
 
     <!-- pdf-lib CDN -->
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
@@ -169,30 +371,48 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            errorMsg.style.display = 'none';
             errorMsg.textContent = '';
 
             const files = fileInput.files;
             if (!files || files.length === 0) {
                 errorMsg.textContent = 'ファイルが選択されていません';
+                errorMsg.style.display = 'block';
                 return;
             }
 
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
             loadingMsg.style.display = 'block';
+
             try {
                 const file = files[0];
                 const arrayBuffer = await file.arrayBuffer();
                 const resultPdfBytes = await splitAndMergePdf(arrayBuffer);
 
-                // 元ファイル名から拡張子を分離
                 const baseName = originalFileName.replace(/\.[^/.]+$/, "");
                 const downloadName = `split_${baseName}.pdf`;
                 
-                downloadFile(resultPdfBytes, downloadName);
+                await downloadFile(resultPdfBytes, downloadName);
+                
+                // 成功メッセージを表示
+                const successMsg = document.createElement('p');
+                successMsg.textContent = 'PDFの分割が完了しました';
+                successMsg.style.color = '#10B981';
+                successMsg.style.margin = '1rem 0';
+                form.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+
             } catch (err) {
                 console.error(err);
                 errorMsg.textContent = 'エラーが発生しました: ' + err.message;
+                errorMsg.style.display = 'block';
             } finally {
                 loadingMsg.style.display = 'none';
+                submitBtn.disabled = false;
             }
         });
 
@@ -209,7 +429,7 @@
             const a1_width_split = a1_width / num_splits_x;
             const a1_height_split = a1_height / num_splits_y;
 
-            // オーバーラップ
+            // オーラップ
             const overlap = 47;
 
             for (let i = 0; i < num_splits_y; i++) {
@@ -236,13 +456,47 @@
         function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+
+            // モバイルデバイスかどうかを確認
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // モバイル用の処理
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    link.target = '_blank';
+                    
+                    // iOSの場合
+                    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        link.target = '_blank';
+                        link.rel = 'noopener';
+                        // 新しいタブでPDFを開く
+                        window.open(url, '_blank');
+                    } else {
+                        // Androidの場合
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                };
+                reader.readAsDataURL(blob);
+            } else {
+                // デスクトップ用の処理
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // URLを解放
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 1000);
         }
     </script>
 </body>
