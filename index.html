@@ -64,6 +64,10 @@
             width: 90%;
             max-width: 500px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .file-drop-area:hover, .file-drop-area.highlight {
@@ -77,6 +81,7 @@
             margin-bottom: 1rem;
             color: var(--primary-color);
             animation: float 3s ease-in-out infinite;
+            text-align: center;
         }
 
         @keyframes float {
@@ -89,6 +94,8 @@
             margin: 0.5rem 0;
             color: var(--text-color);
             font-size: 1rem;
+            width: 100%;
+            text-align: center;
         }
 
         label[for="file-upload"] {
@@ -460,18 +467,8 @@
 
             if (isMobile) {
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS用の処理
-                    const pdfViewer = document.createElement('iframe');
-                    pdfViewer.style.position = 'fixed';
-                    pdfViewer.style.top = '0';
-                    pdfViewer.style.left = '0';
-                    pdfViewer.style.width = '100%';
-                    pdfViewer.style.height = '100%';
-                    pdfViewer.style.border = 'none';
-                    pdfViewer.style.backgroundColor = 'white';
-                    pdfViewer.style.zIndex = '9999';
-                    pdfViewer.src = url;
-                    document.body.appendChild(pdfViewer);
+                    // iOS用の処理 - 標準プレビューを開く
+                    window.open(url, '_blank');
                 } else {
                     // Android用の処理
                     const link = document.createElement('a');
