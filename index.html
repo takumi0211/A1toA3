@@ -186,10 +186,12 @@
             }
         }
 
+        /* ファイル入力のデフォルト表示を非表示にする */
         input[type="file"] {
             display: none;
         }
 
+        /* 広告用のスイルを追加 */
         .ad-container {
             width: 100%;
             max-width: 800px;
@@ -218,6 +220,7 @@
             }
         }
 
+        /* タッチデバイス用の調整 */
         @media (hover: none) {
             .file-drop-area {
                 border: 2px solid #ccc;
@@ -238,6 +241,7 @@
             }
         }
 
+        /* スマートフォン向けの調整 */
         @media (max-width: 480px) {
             body {
                 padding: 5px;
@@ -268,6 +272,18 @@
             }
         }
 
+        /* タブレット向けの調整 */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .file-drop-area {
+                width: 90%;
+                padding: 25px 15px;
+            }
+
+            button {
+                width: 80%;
+            }
+        }
+
         .message {
             position: fixed;
             bottom: 20px;
@@ -289,27 +305,41 @@
             to { opacity: 1; transform: translate(-50%, 0); }
         }
 
-        /* プログレスバー */
-        .progress-container {
-            width: 90%;
-            max-width: 600px;
-            background: #eee;
-            border-radius: 25px;
-            margin: 20px auto;
-            display: none;
-            overflow: hidden;
+        /* モバイルデバイス用の調整 */
+        @media (max-width: 480px) {
+            .message {
+                bottom: 40px;
+                font-size: 13px;
+                padding: 10px 16px;
+            }
         }
 
-        .progress-bar {
-            height: 20px;
-            background: var(--primary-color);
-            width: 0%;
-            transition: width 0.3s ease;
+        /* 既存のスタイルに追加 */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            text-align: center;
         }
 
         .progress-text {
-            margin: 10px 0;
-            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
         }
     </style>
 </head>
@@ -317,7 +347,15 @@
     <div class="container">
         <!-- 上部広告枠 -->
         <div class="ad-container top" id="ad-top">
-            <!-- 広告タグを挿入 -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR-CLIENT-ID"
+                 data-ad-slot="YOUR-AD-SLOT"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
 
         <h1>A1 PDF → A3分割PDF(6枚)生成ツール</h1>
@@ -332,23 +370,26 @@
             <div class="file-name" id="file-name"></div>
             <button type="submit">分割してダウンロード</button>
         </form>
-
         <p class="error" id="error-msg" style="display: none;"></p>
         <p class="loading" id="loading-msg" style="display: none;">処理中です。しばらくお待ちください</p>
 
-        <div class="progress-container" id="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <p class="progress-text" id="progress-text" style="display: none;"></p>
-
         <!-- 下部広告枠 -->
         <div class="ad-container bottom" id="ad-bottom">
-            <!-- 広告タグを挿入 -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR-CLIENT-ID"
+                 data-ad-slot="YOUR-AD-SLOT"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
     </div>
-
     <!-- pdf-lib CDN -->
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-CLIENT-ID"
+     crossorigin="anonymous"></script>
     <script>
         const { PDFDocument } = PDFLib;
 
@@ -358,9 +399,6 @@
         const form = document.getElementById('upload-form');
         const errorMsg = document.getElementById('error-msg');
         const loadingMsg = document.getElementById('loading-msg');
-        const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
 
         let originalFileName = '';
 
@@ -415,28 +453,24 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             showError('');
-            loadingMsg.style.display = 'block';
-            progressContainer.style.display = 'none';
-            progressText.style.display = 'none';
 
             const files = fileInput.files;
             if (!files || files.length === 0) {
-                showError('ファイルが選択されていません');
-                loadingMsg.style.display = 'none';
+                showError('ファイルが選択されていまん');
                 return;
             }
 
+            loadingMsg.style.display = 'block';
             try {
                 const file = files[0];
                 const arrayBuffer = await file.arrayBuffer();
                 const resultPdfBytes = await splitAndMergePdf(arrayBuffer);
-                
+
                 // 元ファイル名から拡張子を分離
                 const baseName = originalFileName.replace(/\.[^/.]+$/, "");
                 const downloadName = `split_${baseName}.pdf`;
                 
-                await downloadFile(resultPdfBytes, downloadName);
-                progressText.textContent = '完了しました！';
+                downloadFile(resultPdfBytes, downloadName);
             } catch (err) {
                 console.error(err);
                 showError('エラーが発生しました: ' + err.message);
@@ -446,69 +480,87 @@
         });
 
         async function splitAndMergePdf(inputArrayBuffer) {
-            const origPdf = await PDFDocument.load(inputArrayBuffer);
-            const newPdf = await PDFDocument.create();
+            try {
+                // 進捗状況を表示
+                loadingMsg.innerHTML = `
+                    <div class="progress-container">
+                        <div class="progress-text">PDFを分割中...</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                `;
+                const progress = document.querySelector('.progress');
 
-            // A1サイズ(ミリ)を72dpi換算
-            const a1_width = (841 / 25.4) * 72;
-            const a1_height = (594 / 25.4) * 72;
+                const origPdf = await PDFDocument.load(inputArrayBuffer);
+                const newPdf = await PDFDocument.create();
 
-            const num_splits_x = 3;
-            const num_splits_y = 2;
-            const totalSplits = num_splits_x * num_splits_y; // 6
-            const a1_width_split = a1_width / num_splits_x;
-            const a1_height_split = a1_height / num_splits_y;
+                // A1サイズを72dpi換算
+                const a1_width = (841 / 25.4) * 72;
+                const a1_height = (594 / 25.4) * 72;
 
-            // オーバーラップ
-            const overlap = 47;
+                const num_splits_x = 3;
+                const num_splits_y = 2;
+                const a1_width_split = a1_width / num_splits_x;
+                const a1_height_split = a1_height / num_splits_y;
 
-            progressContainer.style.display = 'block';
-            progressText.style.display = 'block';
-            updateProgress(0, totalSplits);
+                // オーバーラップ
+                const overlap = 47;
 
-            for (let i = 0; i < num_splits_y; i++) {
-                for (let j = 0; j < num_splits_x; j++) {
-                    const [newPage] = await newPdf.copyPages(origPdf, [0]); 
-                    newPdf.addPage(newPage);
+                for (let i = 0; i < num_splits_y; i++) {
+                    for (let j = 0; j < num_splits_x; j++) {
+                        const [newPage] = await newPdf.copyPages(origPdf, [0]); 
+                        newPdf.addPage(newPage);
 
-                    const x_start = j * a1_width_split;
-                    const x_end = (j + 1) * a1_width_split + overlap;
-                    const y_start = i * a1_height_split;
-                    const y_end = (i + 1) * a1_height_split + overlap;
+                        const x_start = j * a1_width_split;
+                        const x_end = (j + 1) * a1_width_split + overlap;
+                        const y_start = i * a1_height_split;
+                        const y_end = (i + 1) * a1_height_split + overlap;
 
-                    const width = x_end - x_start;
-                    const height = y_end - y_start;
+                        const width = x_end - x_start;
+                        const height = y_end - y_start;
 
-                    newPage.setMediaBox(x_start, y_start, width, height);
+                        newPage.setMediaBox(x_start, y_start, width, height);
 
-                    // 進行状況更新
-                    const doneCount = i * num_splits_x + j + 1;
-                    updateProgress(doneCount, totalSplits);
+                        // 進捗を更新（6ページ分）
+                        const progressPercent = ((i * num_splits_x + j + 1) / (num_splits_x * num_splits_y)) * 100;
+                        progress.style.width = `${progressPercent}%`;
+                        
+                        // 進捗テキストも更新
+                        const progressText = document.querySelector('.progress-text');
+                        progressText.textContent = `PDFを分割中... ${Math.round(progressPercent)}%`;
+                    }
                 }
+
+                loadingMsg.innerHTML = '<div class="progress-text">PDF生成完了！</div>';
+                const pdfBytes = await newPdf.save();
+                return pdfBytes;
+            } catch (error) {
+                throw new Error('PDFの分割処理中にエラーが発生しました: ' + error.message);
             }
-
-            const pdfBytes = await newPdf.save();
-            return pdfBytes;
         }
 
-        function updateProgress(done, total) {
-            const percent = Math.round((done / total) * 100);
-            progressBar.style.width = percent + '%';
-            progressText.textContent = `処理中...(${done}/${total})`;
-        }
-
-        async function downloadFile(bytes, filename) {
+        function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
             if (isMobile) {
-                // PDFをBase64エンコードしてdownload.htmlへ
-                const base64data = await blobToBase64(blob);
-                const params = new URLSearchParams({
-                    pdf: base64data,
-                    filename: filename
-                });
-                window.location.href = `download.html?${params.toString()}`;
+                // モバイルの場合、専用のダウンロードページに遷移
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64data = e.target.result.split(',')[1];
+                    loadingMsg.innerHTML = '<div class="progress-text">ダウンロードページに移動します...</div>';
+                    
+                    // 少し遅延を入れてユーザーに完了を認識させる
+                    setTimeout(() => {
+                        window.location.href = `mobile-download.html?data=${encodeURIComponent(base64data)}&filename=${encodeURIComponent(filename)}`;
+                    }, 1000);
+                };
+                reader.onerror = function() {
+                    showError('PDFの生成中にエラーが発生しました。もう一度お試しください。');
+                    loadingMsg.style.display = 'none';
+                };
+                reader.readAsDataURL(blob);
             } else {
                 // デスクトップの場合は直接ダウンロード
                 const url = URL.createObjectURL(blob);
@@ -519,19 +571,13 @@
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
+                
+                // ダウンロード完了メッセージを表示
+                loadingMsg.innerHTML = '<div class="progress-text">ダウンロードが完了しました！</div>';
+                setTimeout(() => {
+                    loadingMsg.style.display = 'none';
+                }, 2000);
             }
-        }
-
-        function blobToBase64(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64data = reader.result.split(',')[1];
-                    resolve(base64data);
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
         }
 
         function showMessage(message) {
