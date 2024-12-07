@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFダウンロード</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .pdf-container {
+            margin-top: 20px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #4a90e2;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .download-btn:hover {
+            background: #2171c7;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDFをダウンロード</h1>
+    <p>以下のボタンをタップして、PDFをダウンロードしてください。</p>
+    <div class="pdf-container" id="pdf-container"></div>
+    <a class="download-btn" id="download-link" href="#">ダウンロード</a>
+
+    <script>
+        // URLパラメータからpdf(Base64), filenameを取得
+        const params = new URLSearchParams(window.location.search);
+        const pdfBase64 = params.get('pdf');
+        const filename = params.get('filename') || 'download.pdf';
+
+        if (pdfBase64) {
+            // data URIを生成
+            const dataUri = "data:application/pdf;base64," + pdfBase64;
+            const downloadLink = document.getElementById('download-link');
+            downloadLink.href = dataUri;
+            downloadLink.setAttribute('download', filename);
+        } else {
+            document.body.innerHTML = "<p>PDFデータが見つかりませんでした。</p>";
+        }
+    </script>
+</body>
+</html>
