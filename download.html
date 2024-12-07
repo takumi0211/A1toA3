@@ -5,53 +5,190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDFダウンロード</title>
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+
         body {
-            font-family: sans-serif;
-            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
             padding: 20px;
+            background-color: #f5f6fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .pdf-container {
+        .download-container {
+            max-width: 600px;
+            width: 90%;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
             margin-top: 20px;
         }
 
-        .download-btn {
-            display: inline-block;
-            background: #4a90e2;
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 20px;
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            background-color: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
+
+        .filename {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+
+        .instructions {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .instructions h2 {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .download-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 300px;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #357abd;
+        }
+
+        .back-button {
+            color: var(--secondary-color);
             text-decoration: none;
-            font-weight: bold;
             margin-top: 20px;
+            display: inline-block;
         }
 
-        .download-btn:hover {
-            background: #2171c7;
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .download-container {
+                padding: 15px;
+            }
+
+            .instructions {
+                padding: 10px;
+            }
+
+            .download-button {
+                padding: 12px 25px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>PDFをダウンロード</h1>
-    <p>以下のボタンをタップして、PDFをダウンロードしてください。</p>
-    <div class="pdf-container" id="pdf-container"></div>
-    <a class="download-btn" id="download-link" href="#">ダウンロード</a>
+    <div class="download-container">
+        <div class="icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+        </div>
+        <h1>PDFの準備ができました</h1>
+        <div class="filename" id="filename">
+            <!-- ファイル名がここに入ります -->
+        </div>
+
+        <div class="instructions">
+            <h2>ダウンロード手順</h2>
+            <ol>
+                <li>下の「PDFをダウンロード」ボタンをタップし��す。</li>
+                <li>PDFが新しいタブで開きます。</li>
+                <li>画面を長押しして「ダウンロード」または「名前を付けて保存」を選択します。</li>
+            </ol>
+        </div>
+
+        <button class="download-button" id="download-button">
+            PDFをダウンロード
+        </button>
+
+        <a href="index.html" class="back-button">トップページに戻る</a>
+    </div>
 
     <script>
-        // URLパラメータからpdf(Base64), filenameを取得
-        const params = new URLSearchParams(window.location.search);
-        const pdfBase64 = params.get('pdf');
-        const filename = params.get('filename') || 'download.pdf';
+        // URLパラメータからファイル情報を取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdfData = urlParams.get('pdf');
+        const filename = urlParams.get('filename') || 'document.pdf';
 
-        if (pdfBase64) {
-            // data URIを生成
-            const dataUri = "data:application/pdf;base64," + pdfBase64;
-            const downloadLink = document.getElementById('download-link');
-            downloadLink.href = dataUri;
-            downloadLink.setAttribute('download', filename);
-        } else {
-            document.body.innerHTML = "<p>PDFデータが見つかりませんでした。</p>";
-        }
+        // ファイル名を表示
+        document.getElementById('filename').textContent = filename;
+
+        // ダウンロードボタンのイベントリスナー
+        document.getElementById('download-button').addEventListener('click', function() {
+            const byteCharacters = atob(pdfData);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        });
     </script>
 </body>
-</html>
+</html> 
