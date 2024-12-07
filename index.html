@@ -397,7 +397,7 @@
                 
                 // 成功メッセージを表示
                 const successMsg = document.createElement('p');
-                successMsg.textContent = 'PDFの分割が完了しました';
+                successMsg.textContent = 'PDFの分割が完了��ました';
                 successMsg.style.color = '#10B981';
                 successMsg.style.margin = '1rem 0';
                 form.appendChild(successMsg);
@@ -460,59 +460,18 @@
 
             if (isMobile) {
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS用の処理
-                    const successMsg = document.createElement('div');
-                    successMsg.style.position = 'fixed';
-                    successMsg.style.top = '50%';
-                    successMsg.style.left = '50%';
-                    successMsg.style.transform = 'translate(-50%, -50%)';
-                    successMsg.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-                    successMsg.style.padding = '20px';
-                    successMsg.style.borderRadius = '12px';
-                    successMsg.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                    successMsg.style.zIndex = '1000';
-                    successMsg.style.maxWidth = '90%';
-                    successMsg.style.textAlign = 'center';
+                    // iOS用の処理を修正
+                    const dataUrl = URL.createObjectURL(blob);
+                    
+                    // PDFを直接新しいタブで開く
+                    window.location.href = dataUrl;
 
-                    successMsg.innerHTML = `
-                        <p style="margin-bottom: 15px;">PDFが生成されました</p>
-                        <p style="margin-bottom: 15px;">以下の手順で保存してください：</p>
-                        <ol style="text-align: left; margin-bottom: 15px;">
-                            <li style="margin-bottom: 8px;">右上の「共有」ボタン（□と上向き矢印のアイコン）をタップ</li>
-                            <li style="margin-bottom: 8px;">「ファイルに保存」を選択</li>
-                            <li>保存先を選択して「保存」をタップ</li>
-                        </ol>
-                        <button id="openPdfBtn" style="
-                            background: var(--primary-color);
-                            color: white;
-                            padding: 10px 20px;
-                            border: none;
-                            border-radius: 8px;
-                            font-weight: 500;
-                            margin-bottom: 10px;
-                        ">PDFを開く</button>
-                        <button id="closeMsg" style="
-                            background: #e5e7eb;
-                            color: #374151;
-                            padding: 10px 20px;
-                            border: none;
-                            border-radius: 8px;
-                            font-weight: 500;
-                        ">閉じる</button>
-                    `;
-
-                    document.body.appendChild(successMsg);
-
-                    document.getElementById('openPdfBtn').onclick = function() {
-                        window.open(url, '_blank');
-                    };
-
-                    document.getElementById('closeMsg').onclick = function() {
-                        successMsg.remove();
-                    };
-
+                    // URLを解放
+                    setTimeout(() => {
+                        URL.revokeObjectURL(dataUrl);
+                    }, 1000);
                 } else {
-                    // Android用の処理（既存のまま）
+                    // Android用の処理
                     const link = document.createElement('a');
                     link.href = url;
                     link.download = filename;
@@ -521,7 +480,7 @@
                     document.body.removeChild(link);
                 }
             } else {
-                // デスクトップ用の処理（既存のまま）
+                // デスクトップ用の処理
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
@@ -537,4 +496,3 @@
     </script>
 </body>
 </html>
-
