@@ -490,37 +490,24 @@
 
         function downloadFile(bytes, filename) {
             const blob = new Blob([bytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-
-            // モバイルデバイスかどうかを確認
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
             if (isMobile) {
-                // モバイルデバイスの場合
+                // PDFデータをBase64エンコード
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const link = document.createElement('a');
-                    link.href = e.target.result;
-                    link.download = filename;
-                    link.target = '_blank'; // 新しいタブで開く
-                    
-                    // iOSの場合
-                    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                        link.target = '_blank';
-                        link.rel = 'noopener';
-                        showMessage('PDFを新しいタブで開きます。長押しして保存してください。');
-                    }
-                    
-                    document.body.appendChild(link);
-                    setTimeout(() => {
-                        link.click();
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                    }, 100);
+                    const base64data = e.target.result.split(',')[1];
+                    // ダウンロードページにリダイレクト
+                    const params = new URLSearchParams({
+                        pdf: base64data,
+                        filename: filename
+                    });
+                    window.location.href = `download.html?${params.toString()}`;
                 };
                 reader.readAsDataURL(blob);
             } else {
-                // デスクトップの場合は既存の処理
+                // デスクトップの場合は直接ダウンロード
+                const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
