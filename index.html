@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PDFファイル分割ツール</title>
+    <title>PDFファイル分割サイト</title>
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -150,44 +150,77 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 0;
+                padding: 12px;
             }
 
             .container {
-                padding: 0.5rem;
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
+                padding: 1.2rem;
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
             }
 
             .tool-list {
                 grid-template-columns: 1fr;
-                gap: 0.5rem;
-                padding: 0.25rem;
+                gap: 0.8rem;
+                padding: 0.5rem;
+                max-width: 400px;
             }
 
             .tool-item {
-                padding: 1rem;
-                border-radius: 10px;
+                padding: 1rem 1.2rem;
+                min-height: 90px;
+                aspect-ratio: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .tool-item h2 {
+                font-size: 1.1rem;
+                margin: 0.2rem 0;
+                line-height: 1.3;
+            }
+
+            .tool-item p {
+                font-size: 0.85rem;
+                margin: 0.2rem 0;
+                line-height: 1.4;
+                opacity: 0.9;
             }
 
             .tool-item.overlap-settings {
-                padding: 1rem;
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 1.2rem;
                 margin-top: 0.5rem;
+                min-height: 120px;
             }
 
-            .overlap-settings-text {
-                text-align: center;
+            .overlap-settings-text h2 {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
             }
 
             .overlap-settings-text p {
+                font-size: 0.85rem;
+                line-height: 1.6;
                 margin-bottom: 0.5rem;
             }
 
             .overlap-preview-image {
-                width: 160px;
-                height: 160px;
+                width: 140px;
+                height: 80px;
                 margin: 0.5rem auto;
+            }
+
+            /* アニメーションの調整 */
+            .tool-item {
+                animation-duration: 0.3s;
             }
         }
 
@@ -237,7 +270,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>PDF分割ツール</h1>
+        <h1>PDF分割サイト</h1>
         <div class="tool-list">
             <a href="split/split-a1-to-a3.html" class="tool-item">
                 <h2>A1 → A3分割（6枚）</h2>
