@@ -199,24 +199,58 @@
                 text-align: center;
                 padding: 1.2rem;
                 margin-top: 0.5rem;
-                min-height: 120px;
+                min-height: auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .overlap-settings-text {
+                text-align: left;
+                flex: 1;
             }
 
             .overlap-settings-text h2 {
                 font-size: 1.2rem;
                 margin-bottom: 0.5rem;
+                margin-top: 0;
             }
 
             .overlap-settings-text p {
                 font-size: 0.85rem;
-                line-height: 1.6;
-                margin-bottom: 0.5rem;
+                line-height: 1.4;
+                margin: 0;
             }
 
             .overlap-preview-image {
-                width: 140px;
-                height: 80px;
-                margin: 0.5rem auto;
+                width: 100px;
+                height: 60px;
+                margin: 0;
+                flex-shrink: 0;
+            }
+
+            .overlap-preview-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            /* iPhone SE など小さい画面用 */
+            @media (max-width: 360px) {
+                .tool-item.overlap-settings {
+                    padding: 1rem;
+                    gap: 0.8rem;
+                }
+
+                .overlap-preview-image {
+                    width: 80px;
+                    height: 50px;
+                }
+
+                .overlap-settings-text h2 {
+                    font-size: 1.1rem;
+                }
             }
 
             /* アニメーションの調整 */
