@@ -195,28 +195,40 @@
             }
 
             .tool-item.overlap-settings {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1.5fr 1fr;
                 text-align: center;
                 padding: 1.2rem;
                 margin-top: 0.5rem;
-                min-height: 120px;
+                min-height: 90px;
+                gap: 1rem;
+            }
+
+            .overlap-settings-text {
+                text-align: left;
             }
 
             .overlap-settings-text h2 {
-                font-size: 1.2rem;
+                font-size: 1rem;
                 margin-bottom: 0.5rem;
             }
 
             .overlap-settings-text p {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 line-height: 1.6;
                 margin-bottom: 0.5rem;
             }
 
             .overlap-preview-image {
-                width: 140px;
-                height: 80px;
-                margin: 0.5rem auto;
+                width: 100px;
+                height: 60px;
+                margin: 0;
+            }
+
+            .overlap-preview-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                transform: scale(0.9);
             }
 
             /* アニメーションの調整 */
@@ -245,6 +257,25 @@
 
             .tool-item p {
                 font-size: 0.8rem;
+            }
+
+            .tool-item.overlap-settings {
+                padding: 0.8rem;
+                min-height: 80px;
+            }
+
+            .overlap-settings-text h2 {
+                font-size: 0.9rem;
+            }
+
+            .overlap-settings-text p {
+                font-size: 0.75rem;
+                line-height: 1.4;
+            }
+
+            .overlap-preview-image {
+                width: 80px;
+                height: 50px;
             }
         }
 
