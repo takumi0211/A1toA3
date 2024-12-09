@@ -115,32 +115,32 @@
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.1));
             border: 2px solid rgba(79, 70, 229, 0.2);
             display: grid;
-            grid-template-columns: 1.2fr auto;
+            grid-template-columns: 1.2fr 1fr;
             gap: 2rem;
             align-items: center;
-            min-height: 140px;
         }
 
         .overlap-settings-text {
-            text-align: center;
+            text-align: left;
+            padding-left: 1rem;
         }
 
         .overlap-settings-text h2 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .overlap-settings-text p {
-            font-size: 0.9rem;
+            font-size: 1rem;
             line-height: 1.6;
             margin-bottom: 0.5rem;
-            white-space: nowrap;
         }
 
         .overlap-preview-image {
-            width: 160px;
-            height: 100px;
+            width: 240px;
+            height: 140px;
             position: relative;
+            margin-right: 1rem;
         }
 
         .overlap-preview-image img {
@@ -196,42 +196,23 @@
             }
 
             .tool-item.overlap-settings {
-                grid-template-columns: 1.5fr 1fr;
+                grid-template-columns: 1fr;
                 text-align: center;
-                padding: 1.2rem;
+                padding: 1rem;
                 margin-top: 0.5rem;
-                min-height: 90px;
-                gap: 1rem;
-                align-items: flex-start;
-                padding-top: 0.8rem;
+                min-height: 110px;
             }
 
             .overlap-settings-text {
                 text-align: center;
-            }
-
-            .overlap-settings-text h2 {
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .overlap-settings-text p {
-                font-size: 0.75rem;
-                line-height: 1.6;
-                margin-bottom: 0.5rem;
+                padding-left: 0;
             }
 
             .overlap-preview-image {
-                width: 100px;
-                height: 60px;
-                margin: 0;
-            }
-
-            .overlap-preview-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                transform: scale(0.9);
+                width: 200px;
+                height: 100px;
+                margin: 0.5rem auto;
+                margin-right: auto;
             }
 
             /* アニメーションの調整 */
@@ -260,25 +241,6 @@
 
             .tool-item p {
                 font-size: 0.8rem;
-            }
-
-            .tool-item.overlap-settings {
-                padding: 0.8rem;
-                min-height: 80px;
-            }
-
-            .overlap-settings-text h2 {
-                font-size: 0.9rem;
-            }
-
-            .overlap-settings-text p {
-                font-size: 0.75rem;
-                line-height: 1.4;
-            }
-
-            .overlap-preview-image {
-                width: 80px;
-                height: 50px;
             }
         }
 
@@ -327,14 +289,13 @@
                 <div class="overlap-settings-text">
                     <h2>オーバーラップ設定</h2>
                     <p>分割時の重なり幅を調整します。
-                        <br>
+                        分割された用紙の重なり具合を細かく設定できます。
+                        <br><br>
                         <strong>→ 分割イメージと詳細設定はこちら</strong>
                     </p>
                 </div>
                 <div class="overlap-preview-image">
-                    <img src="settings/overlap.jpeg" 
-                         alt="オーバーラップ設定のプレビュー" 
-                         style="width: 80%; height: 80%; object-fit: contain; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    <img src="settings/overlap.jpeg" alt="オーバーラップ設定のプレビュー">
                 </div>
             </a>
         </div>
