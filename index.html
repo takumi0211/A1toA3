@@ -68,7 +68,7 @@
             color: var(--text-color);
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.05);
-            aspect-ratio: 3/2;
+            aspect-ratio: 2/1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -174,54 +174,47 @@
 
             .tool-list {
                 grid-template-columns: 1fr;
-                gap: 0.8rem;
+                gap: 1rem;
                 padding: 0.5rem;
-                max-width: 400px;
             }
 
             .tool-item {
-                padding: 1rem 1.2rem;
-                min-height: 90px;
+                padding: 1rem;
+                margin: 0;
                 aspect-ratio: auto;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
+                min-height: 100px;
             }
 
             .tool-item h2 {
                 font-size: 1.1rem;
                 margin: 0.2rem 0;
-                line-height: 1.3;
             }
 
             .tool-item p {
                 font-size: 0.85rem;
                 margin: 0.2rem 0;
-                line-height: 1.4;
-                opacity: 0.9;
             }
 
+            /* オーバーラップ設定用の特別なスタイル */
             .tool-item.overlap-settings {
-                grid-template-columns: 1fr;
-                text-align: center;
+                grid-column: 1;
                 padding: 1rem;
-                margin-top: 0.5rem;
-                min-height: 110px;
+                margin: 0;
+                background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.1));
             }
 
             .overlap-settings-text {
                 text-align: center;
-                padding-left: 0;
+                padding: 0;
             }
 
             .overlap-preview-image {
-                width: 200px;
-                height: 100px;
+                width: 100px;
+                height: 50px;
                 margin: 0.5rem auto;
-                margin-right: auto;
             }
 
-            /* アニメーション���整 */
+            /* アニメーション整 */
             .tool-item {
                 animation-duration: 0.3s;
             }
