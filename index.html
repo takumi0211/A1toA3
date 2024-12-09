@@ -195,11 +195,16 @@
             }
 
             .tool-item.overlap-settings {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1.5fr 1fr;
                 text-align: center;
                 padding: 1.2rem;
                 margin-top: 0.5rem;
-                min-height: 120px;
+                min-height: 90px;
+                gap: 1rem;
+            }
+
+            .overlap-settings-text {
+                text-align: left;
             }
 
             .overlap-settings-text h2 {
@@ -222,7 +227,9 @@
             .overlap-preview-image {
                 width: 140px;
                 height: 80px;
-                margin: 0.5rem auto;
+                margin: 0;
+                display: flex;
+                align-items: center;
             }
 
             /* アニメーションの調整 */
@@ -253,8 +260,24 @@
                 font-size: 0.8rem;
             }
 
+            .tool-item.overlap-settings {
+                padding: 1rem;
+                gap: 0.8rem;
+            }
+
+            .overlap-preview-image {
+                width: 100px;
+                height: 60px;
+            }
+
+            .overlap-settings-text h2 {
+                font-size: 1.1rem;
+                margin-bottom: 0.3rem;
+            }
+
             .overlap-settings-text p {
                 font-size: 0.75rem;
+                margin-bottom: 0.3rem;
             }
 
             .overlap-settings-text strong {
