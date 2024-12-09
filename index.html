@@ -110,14 +110,15 @@
             grid-column: 1 / -1;
             max-width: none;
             aspect-ratio: auto;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-top: 1rem;
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.1));
             border: 2px solid rgba(79, 70, 229, 0.2);
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 1.2fr auto;
             gap: 2rem;
             align-items: center;
+            min-height: 140px;
         }
 
         .overlap-settings-text {
@@ -125,19 +126,19 @@
         }
 
         .overlap-settings-text h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
         }
 
         .overlap-settings-text p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .overlap-preview-image {
-            width: 200px;
-            height: 200px;
+            width: 160px;
+            height: 100px;
             position: relative;
         }
 
@@ -292,13 +293,14 @@
                 <div class="overlap-settings-text">
                     <h2>オーバーラップ設定</h2>
                     <p>分割時の重なり幅を調整します。
-                        分割された用紙の重なり具合を細かく設定できます。
-                        <br><br>
+                        <br>
                         <strong>→ 分割イメージと詳細設定はこちら</strong>
                     </p>
                 </div>
                 <div class="overlap-preview-image">
-                    <img src="settings/overlap.jpeg" alt="オーバーラップ設定のプレビュー">
+                    <img src="settings/overlap.jpeg" 
+                         alt="オーバーラップ設定のプレビュー" 
+                         style="width: 80%; height: 80%; object-fit: contain; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                 </div>
             </a>
         </div>
