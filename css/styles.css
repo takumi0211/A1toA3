@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #4f46e5;
-    --primary-hover: #4338ca;
+    --primary-color: #8b5cf6;
+    --primary-hover: #7c3aed;
     --bg-color: #f5f3ff;
     --text-color: #1e1b4b;
     --border-color: #ddd6fe;
-    --accent-color: #818cf8;
-    --gradient-start: #4f46e5;
-    --gradient-end: #818cf8;
+    --accent-color: #a78bfa;
+    --gradient-start: #8b5cf6;
+    --gradient-end: #a78bfa;
 }
 
 body {
@@ -67,7 +67,7 @@ h1 {
 }
 
 .file-drop-area {
-    border: 2px dashed rgba(79, 70, 229, 0.3);
+    border: 2px dashed rgba(139, 92, 246, 0.3);
     border-radius: 16px;
     padding: 2.5rem 1.5rem;
     background: rgba(255, 255, 255, 0.8);
@@ -82,8 +82,8 @@ h1 {
 
 .file-drop-area:hover, .file-drop-area.highlight {
     border-color: var(--primary-color);
-    background: rgba(79, 70, 229, 0.05);
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.1);
+    background: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.1);
 }
 
 .upload-icon {
@@ -142,13 +142,13 @@ h1 {
     margin: 1rem auto;
     display: block;
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
     transition: all 0.3s ease;
 }
 
 .submit-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3);
 }
 
 .error {
