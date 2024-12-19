@@ -25,6 +25,12 @@ let originalFileName = '';
 fileDropArea.addEventListener('drop', handleDrop, false);
 fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
+// ファイル選択ボタンのクリックイベントを追加
+document.querySelector('.file-select-button').addEventListener('click', (e) => {
+    e.preventDefault();
+    fileInput.click();
+});
+
 function preventDefaults(e) {
     e.preventDefault();
     e.stopPropagation();
