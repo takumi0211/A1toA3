@@ -1,6 +1,3 @@
-// デバッグ用：LocalStorageをクリア
-localStorage.removeItem('cookieConsent');
-
 // Cookie同意バナーの表示
 function showCookieConsent() {
     const consent = localStorage.getItem('cookieConsent');
