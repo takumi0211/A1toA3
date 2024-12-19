@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>サービスについて - PDF分割サイト</title>
+    <title>お問い合わせ - PDF分割サイト</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -48,18 +48,13 @@
         }
 
         h1 {
-            color: var(--primary-color);
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 2rem;
             text-align: center;
-        }
-
-        h2 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
         }
 
         .content {
@@ -69,23 +64,23 @@
             box-sizing: border-box;
         }
 
-        .section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
+        .contact-info {
+            margin: 2rem 0;
+            padding: 2rem;
             background: rgba(255, 255, 255, 0.5);
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        .section-title {
+        .contact-email {
+            font-size: 1.2rem;
             color: var(--primary-color);
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-weight: 500;
+            margin: 1rem 0;
         }
 
         p {
-            margin: 0.8rem 0;
+            margin: 1rem 0;
             line-height: 1.8;
         }
 
@@ -108,25 +103,6 @@
             transform: translateY(-2px);
         }
 
-        .features-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .features-list li {
-            margin-bottom: 1rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .features-list li:before {
-            content: "•";
-            color: var(--primary-color);
-            position: absolute;
-            left: 0;
-        }
-
         @media (max-width: 600px) {
             body {
                 padding: 12px;
@@ -144,23 +120,14 @@
                 padding: 0.5rem;
             }
 
-            .section {
-                padding: 1rem;
-                margin-bottom: 1rem;
+            .contact-form {
+                height: 700px;
+                margin: 0.5rem 0;
             }
 
             h1 {
                 font-size: 1.5rem;
                 margin: 1rem 0;
-            }
-
-            h2 {
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
             }
 
             p {
@@ -181,11 +148,16 @@
                 padding: 1rem;
                 margin-top: 1rem;
             }
+        }
 
-            .features-list li {
-                font-size: 0.9rem;
-                padding-left: 1rem;
-            }
+        .contact-form {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin: 1rem 0;
+            box-sizing: border-box;
         }
 
         footer {
@@ -223,38 +195,71 @@
             color: var(--text-color);
             opacity: 0.5;
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 1rem;
+                margin: 0;
+                border-radius: 12px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .content {
+                padding: 0.5rem;
+            }
+
+            .contact-form {
+                height: 700px;
+                margin: 0.5rem 0;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .footer-separator {
+                display: none;
+            }
+
+            footer {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-button">← 戻る</a>
     <div class="container">
-        <h1>サービスについて</h1>
+        <h1>お問い合わせ</h1>
         <div class="content">
-            <div class="section">
-                <h2>PDF分割サイトとは</h2>
-                <p>このサイトは、大判のPDFファイルを小さいサイズに分割する無料のオンラインツールを提供しています。</p>
-                <p>建築図面やポスターなどの大判印刷物を、一般的なA3やA4プリンターで印刷できるように最適化します。</p>
-            </div>
-
-            <div class="section">
-                <h2>主な機能</h2>
-                <ul class="features-list">
-                    <li>A1サイズのPDFをA3サイズ6枚に分割</li>
-                    <li>A0サイズのPDFをA3サイズ12枚に分割</li>
-                    <li>A1サイズのPDFをA4サイズ12枚に分割</li>
-                    <li>A2サイズのPDFをA4サイズ6枚に分割</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>特徴</h2>
-                <ul class="features-list">
-                    <li>完全無料で利用可能</li>
-                    <li>アカウント登録不要</li>
-                    <li>ファイルはサーバーに保存されません</li>
-                    <li>SSL暗号化で安全な通信</li>
-                    <li>分割位置の重なり幅を調整可能</li>
-                </ul>
+            <div class="contact-info">
+                <div class="form-container">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfi1FjKbI1IhIIuJx1nO5ChI6MS1fIyBLigMk4uAi3XuC3PFg/viewform?embedded=true" 
+                            width="100%" 
+                            height="800" 
+                            frameborder="0" 
+                            marginheight="0" 
+                            marginwidth="0">
+                        読み込んでいます…
+                    </iframe>
+                </div>
             </div>
         </div>
     </div>
@@ -285,4 +290,3 @@
     <script src="js/cookie-consent.js"></script>
 </body>
 </html>
- 
