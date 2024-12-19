@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDFファイル分割サイト</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f5f3ff;
+            --text-color: #1e1b4b;
+            --border-color: #ddd6fe;
+            --accent-color: #818cf8;
+            --gradient-start: #4f46e5;
+            --gradient-end: #818cf8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 20px auto;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .tool-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .tool-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-color);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.05);
+            aspect-ratio: 2/1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tool-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .tool-item h2 {
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .tool-item p {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+            opacity: 0.8;
+        }
+
+        /* 最後のアイテムを中央に配置 */
+        .tool-item:last-child {
+            grid-column: 1 / -1;
+            max-width: 400px;
+            margin: 0 auto;
+            aspect-ratio: auto;
+        }
+
+        /* オーバーラップ設定用の特別なスタイル */
+        .tool-item.overlap-settings {
+            grid-column: 1 / -1;
+            max-width: 700px;
+            aspect-ratio: auto;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            margin-left: auto;
+            margin-right: auto;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.1));
+            border: 2px solid rgba(79, 70, 229, 0.2);
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .overlap-settings-text {
+            text-align: left;
+            max-width: 450px;
+        }
+
+        .overlap-settings-text h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .overlap-settings-text p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            max-width: 400px;
+        }
+
+        .overlap-preview-image {
+            width: 120px;
+            height: 60px;
+            position: relative;
+            margin-left: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .overlap-preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 1rem;
+                margin: 0;
+                border-radius: 12px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .tool-list {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0.5rem;
+                width: 100%;
+            }
+
+            .tool-item {
+                width: 100%;
+                margin: 0 auto 0.5rem auto;
+                box-sizing: border-box;
+            }
+
+            .tool-item h2 {
+                font-size: 1.1rem;
+                margin: 0.5rem 0;
+            }
+
+            .tool-item p {
+                font-size: 0.9rem;
+                margin: 0.5rem 0;
+                line-height: 1.4;
+            }
+
+            .tool-item.overlap-settings {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .overlap-settings-text {
+                text-align: center;
+                padding: 0;
+            }
+
+            .overlap-preview-image {
+                width: 100%;
+                max-width: 200px;
+                height: auto;
+                margin: 1rem auto;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container {
+                padding: 0.8rem;
+            }
+
+            .tool-item {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tool-item {
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .tool-item:nth-child(2) { animation-delay: 0.1s; }
+        .tool-item:nth-child(3) { animation-delay: 0.2s; }
+        .tool-item:nth-child(4) { animation-delay: 0.3s; }
+        .tool-item:nth-child(5) { animation-delay: 0.4s; }
+
+        /* Cookie同意バナーのスタイル */
+        .cookie-consent-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .cookie-consent-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cookie-consent-text {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .cookie-consent-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cookie-consent-button {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .cookie-consent-accept {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .cookie-consent-accept:hover {
+            background: var(--primary-hover);
+        }
+
+        .cookie-consent-reject {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .cookie-consent-reject:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 600px) {
+            .cookie-consent-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cookie-consent-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2935851985522990"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF分割サイト</h1>
+        <div class="tool-list">
+            <a href="split/split-a1-to-a3.html" class="tool-item">
+                <h2>A1 → A3分割（6枚）</h2>
+                <p>A1サイズのPDFをA3サイズ6枚に分割します</p>
+            </a>
+            <a href="split/split-a0-to-a3.html" class="tool-item">
+                <h2>A0 → A3分割（12枚）</h2>
+                <p>A0サイズのPDFをA3サイズ12枚に分割します</p>
+            </a>
+            <a href="split/split-a1-to-a4.html" class="tool-item">
+                <h2>A1 → A4分割（12枚）</h2>
+                <p>A1サイズのPDFをA4サイズ12枚に分割します</p>
+            </a>
+            <a href="split/split-a2-to-a4.html" class="tool-item">
+                <h2>A2 → A4分割（6枚）</h2>
+                <p>A2サイズのPDFをA4サイズ6枚に分割します</p>
+            </a>
+            <a href="settings/overlap.html" class="tool-item overlap-settings">
+                <div class="overlap-settings-text">
+                    <h2>オーバーラップ設定</h2>
+                        分割イメージと詳細設定はこちら
+                    </p>
+                </div>
+                <div class="overlap-preview-image">
+                    <img src="settings/overlap.jpeg" alt="オーバーラップ設定のプレビュー">
+                </div>
+            </a>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="about.html">サービスについて</a>
+            <span class="footer-separator">|</span>
+            <a href="faq.html">よくある質問</a>
+            <span class="footer-separator">|</span>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <span class="footer-separator">|</span>
+            <a href="contact.html">お問い合わせ</a>
+        </div>
+    </footer>
+    <style>
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+
+        .footer-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-separator {
+            color: var(--text-color);
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .footer-separator {
+                display: none;
+            }
+
+            footer {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <div class="cookie-consent-banner" id="cookieConsent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <p>当サイトでは、サービスの向上とユーザー体験の改善のためにCookieを使用しています。Cookieの使用には、広告のパーソナライズ化やアクセス解析が含まれます。詳しくは<a href="privacy.html" style="color: var(--primary-color);">プライバシーポリシー</a>をご確認ください。</p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button class="cookie-consent-button cookie-consent-accept" onclick="acceptCookies()">同意する</button>
+                <button class="cookie-consent-button cookie-consent-reject" onclick="rejectCookies()">拒否する</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cookie Consent -->
+    <script src="js/cookie-consent.js"></script>
+</body>
+</html>
